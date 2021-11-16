@@ -1,0 +1,69 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOG_DIR" value="./logs"/>
+    <property name="LOG_PATH_NAME" value="${LOG_DIR}/data.log"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH_NAME}</file>
+        <!-- 일자별로 로그파일 적용하기 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/data.log.%d{yyyyMMdd}</fileNamePattern>
+            <maxHistory>60</maxHistory> <!-- 일자별 백업파일의 보관기간 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    }
+
+    <logger name="jdbc" level="OFF"/>
+
+    <logger name="jdbc.sqlonly" level="OFF"/>
+<!--    <logger name="jdbc.sqltiming" level="INFO"/>-->
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+<!--    <logger name="jdbc.resultsettable" level="INFO"/>-->
+    <logger name="jdbc.connection" level="OFF"/>
+
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+        </root>
+        <logger name="jdbc.sqltiming" level="INFO"/>
+        <logger name="jdbc.resultsettable" level="INFO"/>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+        </root>
+        <logger name="jdbc.sqltiming" level="INFO"/>
+        <logger name="jdbc.resultsettable" level="INFO"/>
+    </springProfile>
+
+
+    <springProfile name="develop">
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="jdbc.sqltiming" level="INFO"/>
+        <logger name="jdbc.resultsettable" level="INFO"/>
+    </springProfile>
+
+    <springProfile name="product">
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="jdbc.sqltiming" level="WARN"/>
+        <logger name="jdbc.resultsettable" level="WARN"/>
+    </springProfile>
+</configuration>
