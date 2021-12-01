@@ -57,12 +57,13 @@ public class AuthController {
         AuthToken accessToken = tokenProvider.createAuthToken(
                 userId,
                 ((UserPrincipal) authentication.getPrincipal()).getRoleType().getCode(),
-                new Date(now.getTime() + appProperties.getAuth().getTokenExpiry())
+                new Date(now.getTime() + appProperties.getTokenExpiry())
         );
 
-        long refreshTokenExpiry = appProperties.getAuth().getRefreshTokenExpiry();
+        long refreshTokenExpiry = appProperties.getRefreshTokenExpiry();
         AuthToken refreshToken = tokenProvider.createAuthToken(
-                appProperties.getAuth().getTokenSecret(),
+                appProperties.getTokenSecret(),
+                ((UserPrincipal) authentication.getPrincipal()).getRoleType().getCode(),
                 new Date(now.getTime() + refreshTokenExpiry)
         );
 
@@ -103,9 +104,14 @@ public class AuthController {
         RoleType roleType = RoleType.of(claims.get("role", String.class));
 
         // refresh token
-        String refreshToken = CookieUtil.getCookie(request, REFRESH_TOKEN)
-                .map(Cookie::getValue)
-                .orElse((null));
+        String refreshToken = HeaderUtil.getRefreshToken(request);
+
+        if (refreshToken == null) {
+            refreshToken = CookieUtil.getCookie(request, REFRESH_TOKEN)
+                    .map(Cookie::getValue)
+                    .orElse((null));
+        }
+
         AuthToken authRefreshToken = tokenProvider.convertAuthToken(refreshToken);
 
         if (authRefreshToken.validate()) {
@@ -122,18 +128,18 @@ public class AuthController {
         AuthToken newAccessToken = tokenProvider.createAuthToken(
                 userId,
                 roleType.getCode(),
-                new Date(now.getTime() + appProperties.getAuth().getTokenExpiry())
+                new Date(now.getTime() + appProperties.getTokenExpiry())
         );
 
-        long validTime = authRefreshToken.getTokenClaims().getExpiration().getTime() - now.getTime();
+        long validTime = authRefreshToken.getExpiredTokenClaims().getExpiration().getTime() - now.getTime();
 
         // refresh 토큰 기간이 3일 이하로 남은 경우, refresh 토큰 갱신
         if (validTime <= THREE_DAYS_MSEC) {
             // refresh 토큰 설정
-            long refreshTokenExpiry = appProperties.getAuth().getRefreshTokenExpiry();
+            long refreshTokenExpiry = appProperties.getRefreshTokenExpiry();
 
             authRefreshToken = tokenProvider.createAuthToken(
-                    appProperties.getAuth().getTokenSecret(),
+                    appProperties.getTokenSecret(),
                     new Date(now.getTime() + refreshTokenExpiry)
             );
 

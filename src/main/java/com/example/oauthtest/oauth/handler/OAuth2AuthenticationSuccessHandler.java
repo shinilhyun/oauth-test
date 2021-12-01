@@ -5,6 +5,7 @@ import com.example.oauthtest.oauth.*;
 import com.example.oauthtest.oauth.info.OAuth2UserInfo;
 import com.example.oauthtest.oauth.info.OAuth2UserInfoFactory;
 import com.example.oauthtest.oauth.token.AuthToken;
+import com.example.oauthtest.user.UserPrincipal;
 import com.example.oauthtest.user.UserRefreshToken;
 import com.example.oauthtest.user.UserRefreshTokenRepository;
 import com.example.oauthtest.utils.CookieUtil;
@@ -75,14 +76,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         AuthToken accessToken = tokenProvider.createAuthToken(
                 userInfo.getId(),
                 roleType.getCode(),
-                new Date(now.getTime() + appProperties.getAuth().getTokenExpiry())
+                new Date(now.getTime() + appProperties.getTokenExpiry())
         );
 
         // refresh 토큰 설정
-        long refreshTokenExpiry = appProperties.getAuth().getRefreshTokenExpiry();
+        long refreshTokenExpiry = appProperties.getRefreshTokenExpiry();
 
         AuthToken refreshToken = tokenProvider.createAuthToken(
-                appProperties.getAuth().getTokenSecret(),
+                appProperties.getTokenSecret(),
+                ((UserPrincipal) authentication.getPrincipal()).getRoleType().getCode(),
                 new Date(now.getTime() + refreshTokenExpiry)
         );
 
@@ -126,7 +128,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
 
-        return appProperties.getOauth2().getAuthorizedRedirectUris()
+        return appProperties.getAuthorizedRedirectUris()
                 .stream()
                 .anyMatch(authorizedRedirectUri -> {
                     // Only validate host and port. Let the clients use different paths if they want to

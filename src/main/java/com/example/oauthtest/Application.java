@@ -24,7 +24,6 @@ import java.util.TimeZone;
 @EnableJpaRepositories
 @EnableAsync
 @EnableScheduling
-@EnableConfigurationProperties(AppProperties.class)
 @SpringBootApplication
 public class Application {
 

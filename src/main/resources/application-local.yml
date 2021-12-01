@@ -34,10 +34,7 @@ cors:
 jwt.secret: '8sknjlO3NPTBqo319DHLNqsQAfRJEdKsETOds'
 
 app:
-  auth:
-    tokenSecret: aiden
-    tokenExpirationMsec: 864000000
-  oauth2:
-    authorizedRedirectUris:
-     - http://localhost:8080/oauth2/redirect
-     - http://localhost:3000/oauth2/redirect
+  token-secret: aiden
+  token-expiry: 864000000
+  refresh-token-expiry: 1296000000
+  authorizedRedirectUris: http://localhost:8080/oauth2/redirect,http://localhost:3000/oauth2/redirect
