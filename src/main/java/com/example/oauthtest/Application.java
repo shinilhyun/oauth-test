@@ -1,9 +1,11 @@
 package com.example.oauthtest;
 
+import com.example.oauthtest.config.AppProperties;
 import com.example.oauthtest.config.ShutDownCustom;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
@@ -23,6 +25,7 @@ import java.util.TimeZone;
 @EnableJpaRepositories
 @EnableAsync
 @EnableScheduling
+@EnableConfigurationProperties(AppProperties.class)
 @SpringBootApplication
 public class Application {
 

@@ -16,3 +16,21 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
     open-in-view: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 560467275639-elcqorktg90em5boebl5ukrlh6of1c4k.apps.googleusercontent.com
+            client-secret: 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
+            scope: email, profile
+
+app:
+  auth:
+    tokenSecret: aiden
+    tokenExpirationMsec: 864000000
+  oauth2:
+    authorizedRedirectUris:
+     - http://localhost:8080/oauth2/redirect
+     - http://localhost:3000/oauth2/redirect
