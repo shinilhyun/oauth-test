@@ -18,12 +18,12 @@ public class AuthToken {
 
     private static final String AUTHORITIES_KEY = "role";
 
-    AuthToken(String id, Date expiry, Key key) {
+    public AuthToken(String id, Date expiry, Key key) {
         this.key = key;
         this.token = createAuthToken(id, expiry);
     }
 
-    AuthToken(String id, String role, Date expiry, Key key) {
+    public AuthToken(String id, String role, Date expiry, Key key) {
         this.key = key;
         this.token = createAuthToken(id, role, expiry);
     }
@@ -51,8 +51,9 @@ public class AuthToken {
 
     public Claims getTokenClaims() {
         try {
-            return Jwts.parser()
+            return Jwts.parserBuilder()
                     .setSigningKey(key)
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (SecurityException e) {
@@ -71,13 +72,17 @@ public class AuthToken {
 
     public Claims getExpiredTokenClaims() {
         try {
-            Jwts.parser()
+            Jwts.parserBuilder()
                     .setSigningKey(key)
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token.");
             return e.getClaims();
+        } catch (Exception ee) {
+            log.info("Expired invalid.");
+            return null;
         }
         return null;
     }
