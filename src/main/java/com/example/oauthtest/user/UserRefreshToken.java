@@ -1,5 +1,6 @@
 package com.example.oauthtest.user;
 
+import com.example.oauthtest.support.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_refresh_token")
-public class UserRefreshToken {
+public class UserRefreshToken extends BaseTimeEntity {
     @JsonIgnore
     @Id
     @Column(name = "refresh_token_seq")

@@ -2,6 +2,7 @@ package com.example.oauthtest.user;
 
 import com.example.oauthtest.oauth.ProviderType;
 import com.example.oauthtest.oauth.RoleType;
+import com.example.oauthtest.support.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends BaseTimeEntity {
     @JsonIgnore
     @Id
     @Column(name = "user_seq")
@@ -66,14 +67,6 @@ public class User {
     @NotNull
     private RoleType roleType;
 
-    @Column(name = "created_at")
-    @NotNull
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    @NotNull
-    private LocalDateTime updatedAt;
-
     public User(
             @NotNull @Size(max = 64) String userId,
             @NotNull @Size(max = 100) String username,
@@ -93,8 +86,6 @@ public class User {
         this.profileImageUrl = profileImageUrl != null ? profileImageUrl : "";
         this.providerType = providerType;
         this.roleType = roleType;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }
 
